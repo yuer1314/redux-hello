@@ -1,14 +1,20 @@
 import React from 'react';
+import { connect } from 'react-redux'
 
 class PostBody extends React.Component {
   render() {
+  	 
     return (
       <div className="post-body">
-        PostBody 
+       {this.props.comments.length}
        
       </div>
     );
   }
 }
 
-export default PostBody;
+const mapStateToProps = (state) => ({
+  comments: state
+});
+
+export default connect(mapStateToProps)(PostBody);
