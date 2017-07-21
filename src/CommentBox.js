@@ -1,38 +1,48 @@
-import React from 'react';
+import React, { Component } from 'react'
 import store from './store'
 import { connect } from 'react-redux'
 
-class CommentBox extends React.Component {
+class CommentBox extends Component {
 
-
-handleSubmit=(e) =>{
-  e.preventDefault()
-  let newcomment=this.Input.value
-  store.dispatch({type:'ADD_COMMENT',comment:newcomment})
-  
-  this.myform.reset()
-}
+  handleSubmit = (e) => {
+    e.preventDefault()
+    let newComment = this.commentInput.value
+    store.dispatch({type: 'ADD_COMMENT', comment: newComment,postId: this.props.postId})
+    this.commentForm.reset()
+  }
 
   render() {
-   
-   
-  	let commentList = this.props.comments.map((item) => (
-      <li className="comment" key={Math.random()}>{item}</li>
-    ))
+
+
+    // let { postId, comments } = this.props
+    let postId=this.props.postId
+    let comments=this.props.comments
+    let myComments = comments.filter(value => value.postId ===  postId ).map(item => {
+      return item.content;
+    })
+    console.log('myComments', myComments)
+
     return (
       <div className="comment-box">
-        {commentList}
-        <form ref={form => this.myform = form} onSubmit={this.handleSubmit} className="comment-form">
-          <input  ref = {Input=>this.Input =Input}type="text" className="input" />
-          <button type="submit" className="submit-btn" >提交</button>
+        {
+          myComments.map(item => (
+            <li className="comment" key={Math.random()}>{item}</li>
+          ))
+        }
+        <form ref={value => this.commentForm = value}
+          onSubmit={this.handleSubmit} className="comment-form">
+          <input type="text" className="input" ref={value => this.commentInput = value} />
+          <button type="submit" className="submit-btn">提交</button>
         </form>
-       
+        <div className="underline"></div>
       </div>
     );
   }
 }
-const mapStateToProps = (state) => ({
-  comments: state
-});
 
-export default connect(mapStateToProps)(CommentBox);
+const mapStateToProps = (state) => ({
+  comments: state.comments
+})
+
+export default connect(mapStateToProps)(CommentBox)
+
